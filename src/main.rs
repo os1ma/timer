@@ -13,11 +13,8 @@ fn main() {
     let command = &args[1];
     let options: Vec<String> = args[2..args.len()].to_vec();
 
-    println!("command = {}", command);
-    println!("options = {:?}", options);
-
     match command.as_str() {
-        "timer" => timer::timer(),
+        "timer" => timer::timer(options),
         _ => {
             println!("Unsupported command '{}'", command);
             process::exit(1);
