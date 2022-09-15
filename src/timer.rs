@@ -1,4 +1,7 @@
-use std::process::Command;
+use std::{
+    io::{self, Write},
+    process::Command,
+};
 
 pub fn timer(options: Vec<String>) {
     if options.len() == 0 {
@@ -11,7 +14,7 @@ pub fn timer(options: Vec<String>) {
     let output = Command::new(command).args(args).output();
     match output {
         Ok(o) => {
-            println!("{}", o.status);
+            io::stdout().write(&o.stdout).expect("Error write stdout");
         }
         Err(e) => println!("{}", e),
     }
