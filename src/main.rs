@@ -1,13 +1,13 @@
 mod timer;
 
-use std::env;
+use std::{env, process};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
 
-    if args.len() <= 2 {
+    if args.len() <= 1 {
         println!("No command specified");
-        return;
+        process::exit(1);
     }
 
     let command = &args[1];
@@ -18,6 +18,9 @@ fn main() {
 
     match command.as_str() {
         "timer" => timer::timer(),
-        _ => println!("Unsupported command '{}'", command),
+        _ => {
+            println!("Unsupported command '{}'", command);
+            process::exit(1);
+        }
     }
 }
