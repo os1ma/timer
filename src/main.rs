@@ -1,10 +1,12 @@
+use std::process::Stdio;
 use std::{env, process};
-use std::{
-    io::{self, Write},
-    process::Command,
-};
 
-fn main() {
+use tokio::process::Command;
+use tokio_stream::StreamExt;
+use tokio_util::codec::{FramedRead, LinesCodec};
+
+#[tokio::main]
+async fn main() {
     let args: Vec<String> = env::args().collect();
 
     if args.len() <= 1 {
@@ -15,11 +17,17 @@ fn main() {
     let command = &args[1];
     let args = args[2..args.len()].to_vec();
 
-    let output = Command::new(command).args(args).output();
-    match output {
-        Ok(o) => {
-            io::stdout().write(&o.stdout).expect("Error write stdout");
-        }
-        Err(e) => eprintln!("Command execution failed. {}", e),
+    let mut child = Command::new(command)
+        .args(args)
+        .stdout(Stdio::piped())
+        .spawn()
+        .expect("Failed to run command");
+
+    let stdout = child.stdout.take().unwrap();
+
+    let mut reader = FramedRead::new(stdout, LinesCodec::new());
+
+    while let Some(line) = reader.next().await {
+        println!("{}", line.expect("Error decoding"));
     }
 }
