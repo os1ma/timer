@@ -1,6 +1,6 @@
 # timer
 
-Display argument command with time
+Display argument command output with time
 
 ## Example
 
