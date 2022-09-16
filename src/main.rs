@@ -1,23 +1,25 @@
-mod timer;
-
 use std::{env, process};
+use std::{
+    io::{self, Write},
+    process::Command,
+};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
 
     if args.len() <= 1 {
-        println!("No command specified");
+        eprintln!("No command specified");
         process::exit(1);
     }
 
     let command = &args[1];
-    let options: Vec<String> = args[2..args.len()].to_vec();
+    let args = args[2..args.len()].to_vec();
 
-    match command.as_str() {
-        "timer" => timer::timer(options),
-        _ => {
-            println!("Unsupported command '{}'", command);
-            process::exit(1);
+    let output = Command::new(command).args(args).output();
+    match output {
+        Ok(o) => {
+            io::stdout().write(&o.stdout).expect("Error write stdout");
         }
+        Err(e) => eprintln!("Command execution failed. {}", e),
     }
 }
