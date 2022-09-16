@@ -1,6 +1,7 @@
 use std::process::Stdio;
 use std::{env, process};
 
+use chrono::Local;
 use tokio::process::Command;
 use tokio_stream::StreamExt;
 use tokio_util::codec::{FramedRead, LinesCodec};
@@ -28,6 +29,7 @@ async fn main() {
     let mut reader = FramedRead::new(stdout, LinesCodec::new());
 
     while let Some(line) = reader.next().await {
-        println!("{}", line.expect("Error decoding"));
+        let now = Local::now();
+        println!("{} | {}", now, line.expect("Error decoding"));
     }
 }
