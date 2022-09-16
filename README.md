@@ -1,2 +1,3 @@
-# rust-toybox
-Rustの練習用おもちゃ箱
+# timer
+
+Display argument command with execution time
